@@ -1,8 +1,8 @@
-from ucimlrepo import fetch_ucirepo
+import pandas as pd
 
 def load_raw_data():
     """
-    Carga datos desde UCI ML Repository.
+    Carga datos crudos desde ./data/raw
     """
-    dataset = fetch_ucirepo(id=350)
-    return dataset.data.original
+    dataset = pd.read_csv("./data/raw/credit_defaults.csv", sep=";", header=1)
+    return dataset
