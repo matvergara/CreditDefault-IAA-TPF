@@ -195,6 +195,8 @@ def preprocesar_datos(df: pd.DataFrame = None) -> pd.DataFrame:
     
     print(f"Registros finales: {len(df)}")
     print("Preprocesamiento completado.")
+
+    
     
     return df
 
