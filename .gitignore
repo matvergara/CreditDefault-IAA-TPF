@@ -1,6 +1,16 @@
+# Cachés de Python
 __pycache__/
 *.py[cod]
+
+# Archivos temporales de notebooks
 .ipynb_checkpoints/
+
+# Entorno virtual
 .venv/
+
+# Apuntes de uso personal y notebook de pruebas
 notas_personales.txt
 workbench.ipynb
+
+# Datos procesados
+data/processed
