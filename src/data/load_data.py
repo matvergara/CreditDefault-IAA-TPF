@@ -7,7 +7,7 @@ def load_raw_data():
     dataset = pd.read_csv('../data/raw/credit_defaults.csv', sep=";", header=1)
     return dataset
 
-def save_processed_data(df: pd.DataFrame, path):
+def save_processed_data(df: pd.DataFrame, path = '../data/processed/data_processed.csv'):
     """
     Guarda archivo preprocesado en data/processed
     
