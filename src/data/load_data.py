@@ -14,5 +14,6 @@ def save_processed_data(df: pd.DataFrame, path = '../data/processed/credit_defau
     Args:
         df: Dataframe preprocesado
     Returns
+        None. Guarda el csv en el path indicado
     """
     df.to_csv(path, index=False)
