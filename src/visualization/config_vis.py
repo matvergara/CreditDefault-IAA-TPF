@@ -32,7 +32,8 @@ def set_custom_style():
         'axes.labelsize': 12,               # Tamaño etiquetas ejes
         'xtick.labelsize': 10,
         'ytick.labelsize': 10,
-        'figure.figsize': (10, 6)           # Tamaño por defecto de la figura
+        'figure.figsize': (10, 6),           # Tamaño por defecto de la figura
+        'figure.dpi': 300
     })
     
     print("Estilo de gráficos aplicado correctamente.")
