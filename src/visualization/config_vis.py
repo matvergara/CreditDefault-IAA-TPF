@@ -12,7 +12,7 @@ def set_custom_style():
         None
     """
     # Paleta de colores estándar
-    my_palette = ["#2E4057", "#118AB2", "#06D6A0", "#EF476F", "#FFD166"]
+    my_palette = ["#2E4057", "#4F69D9", "#06D6A0", "#CC403A", "#FFD166"]
     
     # 2. Configurar el tema base de Seaborn
     sns.set_theme(style="white", palette=my_palette)
