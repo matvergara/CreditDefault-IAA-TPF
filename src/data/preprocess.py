@@ -4,28 +4,33 @@ Módulo de preprocesamiento de datos crudos
 
 import pandas as pd
 from src.data import load_data as ld
+from typing import Tuple, List
 
-def eliminar_id(df: pd.DataFrame):
+def eliminar_id(df: pd.DataFrame) -> pd.DataFrame:
     """
     Elimina la primer columna ID que no es necesaria para el análisis
 
     Args:
-        df: DataFrame original
+        df: DataFrame original.
 
     Returns:
-        Dataframe con columna ID eliminada
+        Copia del DataFrame sin la columna 'ID'.
     """
 
     df = df.copy()
     df.drop('ID', axis=1, inplace=True)
     return df
 
-def generar_nombres_columnas_meses():
+def generar_nombres_columnas_meses() -> Tuple[List[str], List[str], List[str]]:
     """
-    Genera los nombres de columnas para meses de deuda, pago y factura
+    Genera los nombres de columnas correspondientes a:
+    - meses de deuda
+    - pago por mes
+    - factura por mes
 
     Returns:
-        Tupla con listas de nombres: (meses_deuda, meses_pago, meses_factura)
+        Tres listas de strings con los nombres de cada grupo de columnas,
+        en el orden (deuda, pago, factura).
     """
     meses = ['abr','may','jun','jul','ago','sep']
     meses_deuda = [f'meses_deuda_{mes}' for mes in meses]
@@ -33,15 +38,15 @@ def generar_nombres_columnas_meses():
     meses_factura = [f'factura_{mes}' for mes in meses]
     return meses_deuda, meses_pago, meses_factura
 
-def renombrar_columnas(df: pd.DataFrame):
+def renombrar_columnas(df: pd.DataFrame) -> pd.DataFrame:
     """
     Renombra las columnas del DataFrame con nombres descriptivos.
 
     Args:
-        df: DataFrame con columnas originales
+        df: DataFrame con columnas originales.
 
     Returns:
-        Dataframe con columnas renombradas
+        Copia del Dataframe con columnas renombradas.
     """
     meses_deuda, meses_pago, meses_factura = generar_nombres_columnas_meses()
 
@@ -53,18 +58,17 @@ def renombrar_columnas(df: pd.DataFrame):
     df.columns = nuevas_cols
     return df
 
-def normalizar_categorias(df):
+def normalizar_categorias(df: pd.DataFrame) -> pd.DataFrame:
     """
     Normaliza las categorías de educación y estado civil.
-
     - Educación: agrupa categorías 0, 5, 6 en 4 (otros)
     - Estado civil: agrupa categoría 0 en 3 (otros)
 
     Args:
-        df: DataFrame con categorías originales
+        df: DataFrame con categorías originales.
 
     Returns:
-        DataFrame con categorías normalizadas
+        Copia del DataFrame con categorías normalizadas.
     """
     df = df.copy()
 
@@ -79,17 +83,16 @@ def normalizar_categorias(df):
 def validar_transiciones_deuda(historial: pd.Series) -> bool:
     """
     Valida que las transiciones entre estados de deuda sean lógicas.
-    
     Reglas:
     - De no consumo (-2, -1) no puede saltar a 2+ meses de atraso
     - De pago mínimo (0) no puede saltar a 3+ meses de atraso
     - De atraso no puede incrementar más de 1 mes
     
     Args:
-        historial: Serie con estados de deuda mensuales
+        historial: Serie con estados de deuda mensuales.
         
     Returns:
-        True si las transiciones son válidas, False en caso contrario
+        True si las transiciones son válidas, False en caso contrario.
     """
     prev = historial.iloc[0]
     
@@ -115,10 +118,10 @@ def filtrar_inconsistencias_deuda(df: pd.DataFrame) -> pd.DataFrame:
     Filtra registros con transiciones de deuda ilógicas.
     
     Args:
-        df: DataFrame con columnas de meses_deuda
+        df: DataFrame con columnas de meses_deuda.
         
     Returns:
-        DataFrame sin registros con transiciones inválidas
+        Copia del DataFrame sin registros con transiciones inválidas.
     """
     meses_deuda, _, _ = generar_nombres_columnas_meses()
     mask_validos = df[meses_deuda].apply(validar_transiciones_deuda, axis=1)
@@ -131,16 +134,15 @@ def filtrar_inconsistencias_deuda(df: pd.DataFrame) -> pd.DataFrame:
 def filtrar_inconsistencias_factura_pago(df: pd.DataFrame) -> pd.DataFrame:
     """
     Filtra registros donde el pago es mayor que la factura sin deuda previa.
-    
     Elimina casos anómalos donde:
     - Pago de septiembre > factura de septiembre
     - Sin deuda en septiembre ni agosto
     
     Args:
-        df: DataFrame con columnas de factura, pago y deuda
+        df: DataFrame con columnas de factura, pago y deuda.
         
     Returns:
-        DataFrame sin registros inconsistentes
+        Copia del DataFrame sin registros inconsistentes.
     """
     condicion_anomala = (
         (df['factura_sep'] < df['pago_sep']) &
@@ -158,10 +160,10 @@ def seleccionar_columnas_septiembre(df: pd.DataFrame) -> pd.DataFrame:
     Selecciona solo columnas demográficas, de septiembre y target.
     
     Args:
-        df: DataFrame completo
+        df: DataFrame completo.
         
     Returns:
-        DataFrame con columnas seleccionadas
+        Copia del DataFrame con columnas seleccionadas.
     """
     columnas_base = ['limite_credito', 'genero', 'educacion', 'estado_civil', 'edad']
     columnas_sep = [col for col in df.columns if 'sep' in col]
@@ -178,7 +180,7 @@ def preprocesar_datos(df: pd.DataFrame = None) -> pd.DataFrame:
         df: DataFrame opcional. Si no se proporciona, carga datos raw.
         
     Returns:
-        DataFrame preprocesado
+        DataFrame preprocesado.
     """
     if df is None:
         df = ld.load_raw_data()
